@@ -1169,26 +1169,45 @@ a {
   </div>
 
 </a>
-  <!-- ==================== LOGIN MODAL ==================== -->
-<div id="loginModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-[99999]">
-  <div class="liquid-glass rounded-3xl p-8 sm:p-10 w-full max-w-md mx-4 shadow-2xl">
-    <div class="text-center mb-8">
-      <div class="mx-auto w-20 h-20 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center text-5xl mb-4 shadow-inner">🔒</div>
-      <h2 class="text-3xl font-bold title-shine">Xác thực truy cập</h2>
-      <p class="text-slate-600 mt-2">Nhập mật khẩu để tiếp tục</p>
+  <!-- ==================== LOGIN MODAL CHUYÊN NGHIỆP ==================== -->
+<div id="loginModal" class="fixed inset-0 bg-gradient-to-br from-slate-950/90 to-black/90 flex items-center justify-center z-[99999] backdrop-blur-xl">
+  <div class="liquid-glass rounded-3xl p-10 w-full max-w-md mx-4 shadow-2xl border border-white/20">
+    
+    <!-- Logo & Header -->
+    <div class="flex flex-col items-center text-center mb-8">
+      <div class="w-20 h-20 bg-gradient-to-br from-cyan-400 via-teal-400 to-emerald-500 rounded-2xl flex items-center justify-center text-5xl shadow-xl mb-5 border border-white/30">
+        🔐
+      </div>
+      <h1 class="text-3xl font-bold title-shine tracking-tight">JUNE</h1>
+      <p class="text-teal-400 font-medium mt-1">Premium Access</p>
+      <p class="text-slate-400 text-sm mt-4">Nhập mật khẩu để truy cập hệ thống</p>
     </div>
-    
-    <input type="password" id="passwordInput" 
-           class="w-full px-6 py-4 rounded-2xl border border-white/30 bg-white/20 backdrop-blur focus:outline-none focus:border-teal-400 text-lg mb-6"
-           placeholder="Mật khẩu...">
-    
+
+    <!-- Input -->
+    <div class="space-y-2">
+      <div class="relative">
+        <input 
+          type="password" 
+          id="passwordInput" 
+          class="w-full px-6 py-5 rounded-2xl bg-white/10 border border-white/30 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 outline-none text-white placeholder-slate-400 text-lg transition-all"
+          placeholder="••••••••"
+          onkeypress="if(event.key === 'Enter') handleLogin()">
+      </div>
+    </div>
+
+    <!-- Button -->
     <button onclick="handleLogin()" 
-            class="w-full py-4 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold rounded-2xl text-lg shadow-lg transition">
-      Đăng nhập
+            class="mt-6 w-full py-5 bg-gradient-to-r from-teal-500 via-cyan-500 to-emerald-500 hover:brightness-110 active:scale-[0.985] text-white font-semibold text-lg rounded-2xl shadow-xl shadow-teal-500/30 transition-all duration-200 flex items-center justify-center gap-3">
+      <span>Đăng Nhập</span>
+      <i class="fa-solid fa-arrow-right"></i>
     </button>
+
+    <!-- Footer note -->
+    <p class="text-center text-slate-500 text-xs mt-8">
+      Bảo mật bởi JUNE • Chỉ dành cho người dùng ủy quyền
+    </p>
   </div>
 </div>
-
 <script src="config.js"></script>
 <script>
 // Gửi Telegram
