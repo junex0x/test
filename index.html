@@ -1169,32 +1169,35 @@ a {
   </div>
 
 </a>
-  <!-- Login Modal -->
-<div id="loginModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
+  <!-- ==================== LOGIN MODAL ==================== -->
+<div id="loginModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-[99999]">
   <div class="liquid-glass rounded-3xl p-8 sm:p-10 w-full max-w-md mx-4 shadow-2xl">
     <div class="text-center mb-8">
-      <div class="mx-auto w-20 h-20 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center text-5xl mb-4">🔒</div>
+      <div class="mx-auto w-20 h-20 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center text-5xl mb-4 shadow-inner">🔒</div>
       <h2 class="text-3xl font-bold title-shine">Xác thực truy cập</h2>
       <p class="text-slate-600 mt-2">Nhập mật khẩu để tiếp tục</p>
     </div>
+    
     <input type="password" id="passwordInput" 
-           class="w-full px-6 py-4 rounded-2xl border border-white/30 bg-white/20 backdrop-blur focus:outline-none focus:border-teal-400 text-lg"
+           class="w-full px-6 py-4 rounded-2xl border border-white/30 bg-white/20 backdrop-blur focus:outline-none focus:border-teal-400 text-lg mb-6"
            placeholder="Mật khẩu...">
-    <button onclick="login()" 
-            class="mt-6 w-full bubble-primary py-4 rounded-2xl text-lg font-semibold">
+    
+    <button onclick="handleLogin()" 
+            class="w-full py-4 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold rounded-2xl text-lg shadow-lg transition">
       Đăng nhập
     </button>
   </div>
 </div>
 
+<script src="config.js"></script>
 <script>
-// ... (code config + hàm sendTelegram)
+// Gửi thông báo Telegram
 async function sendTelegram(message) {
   if (!CONFIG.TELEGRAM_BOT_TOKEN) return;
   try {
     await fetch(`https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: CONFIG.TELEGRAM_CHAT_ID,
         text: message,
@@ -1204,42 +1207,30 @@ async function sendTelegram(message) {
   } catch(e) {}
 }
 
-// Phần login (thay vào code login)
-async function login() {
-  const inputPw = document.getElementById('passwordInput').value.trim();
+// Login function
+async function handleLogin() {
+  const pw = document.getElementById('passwordInput').value.trim();
   
-  if (inputPw === CONFIG.PASSWORD) {
+  if (pw === CONFIG.PASSWORD) {
     document.getElementById('loginModal').style.display = 'none';
     
-    // Gửi thông báo Telegram
-    const ipInfo = await fetch('https://ipapi.co/json/').then(r=>r.json()).catch(()=> ({}));
+    const ipInfo = await fetch('https://ipapi.co/json/').then(r => r.json()).catch(() => ({}));
     const msg = `🔓 <b>${CONFIG.SITE_NAME}</b> - Đăng nhập thành công\n\n` +
                 `📍 IP: ${ipInfo.ip || 'Unknown'}\n` +
-                `🌍 Vị trí: ${ipInfo.city}, ${ipInfo.country}\n` +
-                `⏰ ${new Date().toLocaleString('vi-VN')}\n` +
-                `🖥 Thiết bị: ${navigator.userAgent.substring(0,80)}...`;
+                `🌍 ${ipInfo.city || ''}, ${ipInfo.country || ''}\n` +
+                `⏰ ${new Date().toLocaleString('vi-VN')}`;
     
     sendTelegram(msg);
+    alert("✅ Đăng nhập thành công!");
   } else {
-    alert("❌ Mật khẩu sai! Vui lòng thử lại.");
+    alert("❌ Mật khẩu sai!");
   }
 }
 
-// Hook copy module
-window.copyConfig = async function() {
-  // code copy cũ của bạn...
-  const configText = "..."; // module text
-  navigator.clipboard.writeText(configText);
-  
-  sendTelegram(`📋 <b>Sao chép Module</b>\nNgười dùng vừa copy module Locket`);
+// Show modal when page loads
+window.onload = function() {
+  document.getElementById('loginModal').style.display = 'flex';
 };
-
-// Tương tự cho các link tải DNS
-document.querySelectorAll('a[href*="dns"], a[href*="profile"]').forEach(link => {
-  link.addEventListener('click', () => {
-    sendTelegram(`⬇️ <b>Tải DNS/Profile</b>\nNgười dùng vừa tải file cấu hình DNS`);
-  });
-});
 </script>
 </body>
 </html>
