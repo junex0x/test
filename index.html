@@ -1191,44 +1191,69 @@ a {
 
 <script src="config.js"></script>
 <script>
-// Gửi thông báo Telegram
+// Gửi Telegram
 async function sendTelegram(message) {
-  if (!CONFIG.TELEGRAM_BOT_TOKEN) return;
+  if (!CONFIG.TELEGRAM_BOT_TOKEN) {
+    console.log("Telegram:", message);
+    return;
+  }
   try {
     await fetch(`https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         chat_id: CONFIG.TELEGRAM_CHAT_ID,
         text: message,
         parse_mode: 'HTML'
       })
     });
-  } catch(e) {}
+  } catch(e) { console.log("Telegram error", e); }
 }
 
-// Login function
+// Lấy IP + Vị trí
+async function getLocationInfo() {
+  try {
+    // Thử ipapi.co trước
+    let data = await fetch('https://ipapi.co/json/').then(r => r.json());
+    if (data.ip) return data;
+  } catch(e) {}
+  
+  try {
+    // Fallback ipinfo.io
+    let data = await fetch('https://ipinfo.io/json').then(r => r.json());
+    return {
+      ip: data.ip,
+      city: data.city,
+      country: data.country
+    };
+  } catch(e) {}
+  
+  return { ip: 'Unknown', city: '', country: '' };
+}
+
+// Login
 async function handleLogin() {
   const pw = document.getElementById('passwordInput').value.trim();
   
   if (pw === CONFIG.PASSWORD) {
     document.getElementById('loginModal').style.display = 'none';
     
-    const ipInfo = await fetch('https://ipapi.co/json/').then(r => r.json()).catch(() => ({}));
+    const loc = await getLocationInfo();
+    
     const msg = `🔓 <b>${CONFIG.SITE_NAME}</b> - Đăng nhập thành công\n\n` +
-                `📍 IP: ${ipInfo.ip || 'Unknown'}\n` +
-                `🌍 ${ipInfo.city || ''}, ${ipInfo.country || ''}\n` +
-                `⏰ ${new Date().toLocaleString('vi-VN')}`;
+                `📍 IP: ${loc.ip}\n` +
+                `🌍 Vị trí: ${loc.city || ''} ${loc.country || ''}\n` +
+                `⏰ ${new Date().toLocaleString('vi-VN')}\n` +
+                `🖥 ${navigator.userAgent.substring(0, 60)}...`;
     
     sendTelegram(msg);
-    alert("✅ Đăng nhập thành công!");
+    alert("✅ Đăng nhập thành công! Thông tin đã gửi về Telegram.");
   } else {
     alert("❌ Mật khẩu sai!");
   }
 }
 
-// Show modal when page loads
-window.onload = function() {
+window.onload = () => {
   document.getElementById('loginModal').style.display = 'flex';
 };
 </script>
